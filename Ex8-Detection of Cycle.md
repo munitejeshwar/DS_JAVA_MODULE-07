@@ -1,25 +1,22 @@
-# Ex8 Detection of Cycle and Finding the Starting Node in a Linked List
+# Ex7 Removal of Nodes with a Specific Value from a Linked List
 ## DATE: 11/02/26
 ## AIM:
-To write a program that detects a cycle in a linked list and returns the node where the cycle begins.
-If there is no cycle, the program should return null without modifying the linked list.
+To write a java  program that removes all nodes from a linked list whose value matches a given integer (val) and returns the new head of the modified linked list.
+
 ## Algorithm
 1. Start the program.
-2. Read input & build linked list.
-3. If pos >= 0, link last node to pos node.
-4. Use Floyd’s algorithm to detect cycle.
-5. If no cycle → print "no cycle".
-6. If cycle detected: Move second pointer from head until it meets slow pointer. That meeting point is cycle start.
-7. Find index of that node in nodeList.
-8. Print "tail connects to node index X".
-9. Stop the program.
+2. Create dummy head.
+3. Set prev = dummy, curr = head.
+4. Traverse list.
+5. Move curr each step.
+6. Return dummy.next as updated head.
+7. Stop the program.   
 
 ## Program:
 ```
 /*
-program that detects a cycle in a linked list and returns the node where the cycle begins.
-If there is no cycle, the program should return null without modifying the linked list.
-Developed by: K.Muni Tejeshwar
+program that removes all nodes from a linked list whose value matches a given integer (val) and returns the new head of the modified linked list.
+Developed by: K. Muni Tejeshwar
 RegisterNumber: 212223040102
 */
 ```
@@ -27,99 +24,80 @@ RegisterNumber: 212223040102
 
 import java.util.*;
 
-public class Solution {
+class ListNode {
+    int val;
+    ListNode next;
 
-    static class ListNode {
-        int val;
-        ListNode next;
+    ListNode(int val) {
+        this.val = val;
+    }
+}
 
-        ListNode(int x) {
-            val = x;
-            next = null;
+class Solution {
+    public ListNode removeElements(ListNode head, int val) {
+        ListNode sentinel = new ListNode(0);
+        sentinel.next = head;
+
+        ListNode prev = sentinel, curr = head;
+        while (curr != null) {
+            if (curr.val == val)
+                prev.next = curr.next;
+            else
+                prev = curr;
+            curr = curr.next;
         }
+        return sentinel.next;
+    }
+}
+
+public class Main {
+
+    public static ListNode buildList(int[] arr) {
+        if (arr.length == 0) return null;
+        ListNode head = new ListNode(arr[0]);
+        ListNode current = head;
+        for (int i = 1; i < arr.length; i++) {
+            current.next = new ListNode(arr[i]);
+            current = current.next;
+        }
+        return head;
     }
 
-    public ListNode detectCycle(ListNode head) {
-        if (head == null || head.next == null) return null;
-
-        ListNode slow = head, fast = head;
-
-        while (fast != null && fast.next != null) {
-            slow = slow.next;
-            fast = fast.next.next;
-
-            if (slow == fast) 
-               
-                ListNode entry = head;
-                while (entry != slow) {
-                    entry = entry.next;
-                    slow = slow.next;
-                }
-                return entry;
-            }
+    public static String listToString(ListNode head) {
+        List<Integer> result = new ArrayList<>();
+        while (head != null) {
+            result.add(head.val);
+            head = head.next;
         }
-
-        return null;
+        return result.toString(); // e.g. [1, 2, 3]
     }
 
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        Solution sol = new Solution();
+        Scanner scanner = new Scanner(System.in);
 
-        String headInput = sc.nextLine().trim().replaceAll("\\[|\\]", "");
-        
-        int pos = sc.nextInt();
+     
+        String input = scanner.nextLine().replaceAll("\\s", "");
+        int[] nums = Arrays.stream(input.split(",")).mapToInt(Integer::parseInt).toArray();
 
-        if (headInput.isEmpty()) {
-            System.out.println("no cylce");
-            return;
-        }
+       
+       
+        int val = scanner.nextInt();
 
-        String[] parts = headInput.split(",");
-        int[] values = Arrays.stream(parts).mapToInt(Integer::parseInt).toArray();
+        ListNode head = buildList(nums);
+        Solution solution = new Solution();
+        ListNode updated = solution.removeElements(head, val);
 
-        ListNode head = new ListNode(values[0]);
-        ListNode current = head;
-        List<ListNode> nodeList = new ArrayList<>();
-        nodeList.add(head);
+        System.out.println(listToString(updated));
 
-        for (int i = 1; i < values.length; i++) {
-            ListNode newNode = new ListNode(values[i]);
-            current.next = newNode;
-            current = newNode;
-            nodeList.add(newNode);
-        }
-
-      
-        if (pos >= 0 && pos < nodeList.size()) {
-            current.next = nodeList.get(pos);
-        }
-
-
-        ListNode cycleStart = sol.detectCycle(head);
-
-        if (cycleStart != null) {
-            int index = 0;
-            for (ListNode node : nodeList) {
-                if (node == cycleStart) {
-                    System.out.println("tail connects to node index " + index);
-                    return;
-                }
-                index++;
-            }
-        } else {
-            System.out.println("no cycle");
-        }
+        scanner.close();
     }
 }
 ```
 
 ## Output:
 
-<img width="785" height="229" alt="image" src="https://github.com/user-attachments/assets/2c2c1c13-d8c9-4f90-a8fe-be2a87a79f0d" />
+<img width="813" height="298" alt="image" src="https://github.com/user-attachments/assets/e1f21b34-4ac3-4b3b-a68b-fdde21bc5a86" />
 
 
 ## Result:
-The program successfully detects whether a cycle exists in the linked list.
-If a cycle is present, it correctly identifies and returns the node where the cycle begins.
-
+The java program successfully removes all nodes with the specified value (val) from the linked list and returns the new head.
